@@ -1,0 +1,107 @@
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+/**
+ * Problem Statement:
+ * 
+ * Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+ * Constraints:
+		1 <= nums.length <= 105
+		-104 <= nums[i] <= 104
+		k is in the range [1, the number of unique elements in the array].
+		It is guaranteed that the answer is unique.
+ * Follow up: Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
+ * 
+ * Solution:
+ * 		You can solve this problem in different ways. I felt below two are the best solutions
+ * 		1. Using HashMap and then List   - T.C O(nlogn)
+ * 		2. Using min heap  				 - T.C O(nlogk)  < O(nlogn)
+ * 
+ * Given constraint that algorithm T.C must be better than O(nlogn). I prefer to use second solution.	
+ * 		
+ */
+public class TopKFreqElements {
+
+	/*
+	 * 1. Using HashMap and then List
+	 * 	  	Iterate through the given array and store the numbers and their frequency in the HashMap.
+	 * 		The next step is to copy each entry from the hash map to the list and then reverse-order-sort the entries based on the value in the map.
+	 * 		Get the first k entries from the list which are nothing but top k frequent elements.
+	 * 
+	 * 		Time Complexity : O(nlogn)
+	 */
+	public static int[] topKFrequent(int[] nums, int k) {
+
+		
+		Map<Integer, Integer> frequency = new HashMap<Integer, Integer>();
+		for (int i = 0; i < nums.length; i++) {
+			frequency.put(nums[i], frequency.getOrDefault(nums[i], 0) + 1);
+		}
+
+		List<Map.Entry<Integer, Integer>> list = new ArrayList<>(frequency.entrySet());
+		Collections.sort(list, Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+		List<Integer> topFreqKeys = list.stream().map(Map.Entry<Integer, Integer>::getKey).limit(k)
+				.collect(Collectors.toList());
+
+		int[] result = new int[topFreqKeys.size()];
+		for (int i = 0; i < topFreqKeys.size(); i++) {
+			result[i] = topFreqKeys.get(i);
+		}
+
+		return result;
+	}
+
+	/*
+	 * 2. Using Heap data structure
+	 * 	  a. In this case, PriorityQueue serves as a minimum heap based on the frequency of the elements.
+	 * 	  b. Maintain heap size k at all times. If it crosses, get rid of the number since it is the least frequent element among the remaining k-1 items and is at the top of the heap.
+	 * 	  c. The order should be to first add the new element to the heap and then remove the top element from the heap if the size is greater than k. If you do it in another way,
+	 * 		 you might end up adding a less frequent element by removing the most frequent element.
+	 *    d. By the time the iteration of the hashmap is completed, you will have the heap, which contains k frequent elements.
+	 *  
+	 *  Time Complexity : O(nlogk)
+	 */
+	public static int[] topKFrequent_heap(int[] nums, int k) {
+
+		if(k>=nums.length)
+			return nums;
+		Map<Integer, Integer> freq = new HashMap<>();
+		for (int i = 0; i < nums.length; i++) {
+			freq.put(nums[i], freq.getOrDefault(nums[i], 0) + 1);
+		}
+
+		PriorityQueue<Integer> pq = new PriorityQueue<>((n1, n2) -> freq.get(n1) - freq.get(n2));
+
+		for (int x : freq.keySet()) {
+			
+			pq.add(x);
+			if (pq.size() > k) {
+				pq.poll();
+			}
+		}
+
+		int[] ans = new int[k];
+		for (int i = 0; i < k; i++) {
+			ans[i] = pq.poll();
+		}
+
+		return ans;
+	}
+
+	public static void main(String args[]) {
+		int[] arr = { 1, 1, 1, 2, 2, 3 };
+		System.out.println(Arrays.toString(topKFrequent_heap(arr, 2)));
+	}
+
+}
