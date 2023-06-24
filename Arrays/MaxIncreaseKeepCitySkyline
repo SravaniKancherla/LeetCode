@@ -9,7 +9,10 @@ import java.util.Arrays;
  	We are allowed to increase the height of any number of buildings by any amount (the amount can be different per building). The height of a 0-height building can also be increased. However, increasing the height of a building should not affect the city's skyline from any cardinal direction.
 
 	Return the maximum total sum that the height of the buildings can be increased by without changing the city's skyline from any cardinal direction.
-
+	
+	Time Complexity : O(n*n)
+	
+	Space Complexity: O(n+n) 
  
  */
 public class MaxIncreaseKeepCitySkyline {
@@ -17,10 +20,10 @@ public class MaxIncreaseKeepCitySkyline {
 public static int maxIncreaseKeepingSkyline(int[][] grid) {
         
 	int n = grid.length;
-	int m = grid[0].length;
+	
 	//Declare the arrays maxCols and maxRows to store max height of building in each row and column.
-	int[] maxCols = new int[grid[0].length];
-	int[] maxRows = new int[grid.length];
+	int[] maxCols = new int[n];
+	int[] maxRows = new int[n];
 	
 	/* Calculate and store the maximum height of each column, which is the height of the highest building that each
 	 * column would have if seen from both the top and the bottom.It indicates that we are able to increase each 
@@ -30,7 +33,7 @@ public static int maxIncreaseKeepingSkyline(int[][] grid) {
 	for(int i=0;i<n;i++) {
 		
 		
-		for(int j =0;j<m;j++)
+		for(int j =0;j<n;j++)
 		{
 			maxRows[i]= Math.max(maxRows[i], grid[i][j]);
 			maxCols[j] = Math.max(maxCols[j],grid[i][j]);
@@ -42,7 +45,7 @@ public static int maxIncreaseKeepingSkyline(int[][] grid) {
 	which is the minimum of the maxRow[i],maxCols[j].*/
 	int sum =0;
 	for(int i=0;i<n;i++) {
-		for(int j=0;j<m;j++) {
+		for(int j=0;j<n;j++) {
 			sum+= Math.min(maxRows[i], maxCols[j])-grid[i][j];
 		}
 	}
