@@ -1,0 +1,97 @@
+
+/*
+ * Binary Search Tree to Greater Sum Tree
+
+ * Given the root of a Binary Search Tree (BST), convert it to a Greater Tree such that every key of the original
+ * BST is changed to the original key plus the sum of all keys greater than the original key in BST.
+ */
+import java.util.Deque;
+import java.util.LinkedList;
+
+import bst.BSTFromPreOrder.TreeNode;
+
+public class BSTToGST {
+
+	public static class TreeNode {
+	      int val;
+	      TreeNode left;
+	      TreeNode right;
+	      TreeNode() {}
+	      TreeNode(int val) { this.val = val; }
+	      TreeNode(int val, TreeNode left, TreeNode right) {
+	          this.val = val;
+	          this.left = left;
+	          this.right = right;
+	      }
+	  }
+	
+	 //Recursive appraoch
+	 public static TreeNode bstToGst(TreeNode root) {
+	        
+		 
+		  constructGST(root,new int[] {0});
+		  return root;
+	    }
+
+	 public static void constructGST(TreeNode root,int[] sum) {
+		 if(root == null)
+			 return;
+		 constructGST(root.right,sum);
+		 sum[0]+=root.val;
+		 root.val= sum[0];
+		 
+		 constructGST(root.left,sum);
+	 }
+	 
+	 /*
+	  * Iteraticve approach
+	  * Time Complexity : O(n)
+	  * Space complexity : O(n)
+	  */
+	 public static TreeNode bstToGst_iterative(TreeNode root) {
+		 
+		 /* We have to traverse the tree in the order right root left (reverse in-order traversal).
+		  * Go deep to the right to obtain the maximum value, add it to the root of that node, which is the 
+		  * following maximum value, and then add the values of the preceding nodes to the left. until you get to 
+		  * the deep left, which is the minimum value, continue in this manner.
+		  */
+		 TreeNode node = root;
+		 Deque<TreeNode> stack = new LinkedList<>();
+		 int sum =0;
+		 while(true) {
+			 
+			 while(node!=null) {
+				 stack.push(node);
+				 node = node.right;
+			 }
+			 if(node == null) {
+			 node = stack.poll();
+			 sum+=node.val;
+			 node.val = sum;
+			// System.out.println(node.val);
+			 node = node.left;
+			 }
+			 if(stack.isEmpty() && node == null)
+				 break;
+			
+			 
+		 }
+		 return root;
+	 }
+	 
+	 public static void main(String args[]) {
+		 TreeNode root = new TreeNode(4);
+		 root.left = new TreeNode(1);
+		 root.right = new TreeNode(6);
+		 root.left.left = new TreeNode(0);
+		 root.left.right = new TreeNode(2);
+		 root.left.right.right = new TreeNode(3);
+		 
+		 root.right.left = new TreeNode(5);
+		 root.right.right = new TreeNode(7);
+		 root.right.right.right = new TreeNode(8);
+		 
+		 TreeNode root1 = bstToGst_iterative(root);
+		System.out.println(root1.val);
+	 }
+}
