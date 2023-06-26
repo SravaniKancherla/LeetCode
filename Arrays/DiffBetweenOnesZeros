@@ -1,0 +1,67 @@
+/*
+ * 	You are given a 0-indexed m x n binary matrix grid.
+
+	A 0-indexed m x n difference matrix diff is created with the following procedure:
+
+	Let the number of ones in the ith row be onesRowi.
+	Let the number of ones in the jth column be onesColj.
+	Let the number of zeros in the ith row be zerosRowi.
+	Let the number of zeros in the jth column be zerosColj.
+		diff[i][j] = onesRowi + onesColj - zerosRowi - zerosColj
+	Return the difference matrix diff.
+ */
+public class DiffBetweenOnesZeros {
+
+	/*
+	 * 1. In the given matrix grid, count the number of 0s and 1s in each row and column denoted by 
+	 * zerosRow[], zerosCol[], onesRow[], and onesCol[].
+	 * 2. Calculate the difference matrix using the formula
+	 * 		diff[i][j] = onesRow[i]+onesCol[j]-zerosRow[i]-zerosCol[j].
+	 */
+	 public static int[][] onesMinusZeros(int[][] grid) {
+	        
+		 	//Delcaration
+		 	int m = grid.length;
+		 	int n = grid[0].length;
+		 	int[] zerosRow= new int[m];
+		 	int[] zerosCol = new int[n];
+		 	int[] onesRow = new int[m];
+		 	int[] onesCol = new int[n];
+		 	for(int i=0;i<m;i++) {
+		 		for(int j=0;j<n;j++) {
+		 			
+		 			if(grid[i][j]==0) {
+		 				zerosRow[i]+=1;
+		 				zerosCol[j]+=1;
+		 			}
+		 			else {
+		 				onesRow[i]++;
+		 				onesCol[j]++;
+		 			}
+		 		}
+		 	}
+		 	
+		 	//Declare the diff[][] matrix;
+		 	int[][] diff = new int[m][n];
+		 	
+		 	for(int i=0;i<m;i++) {
+		 		for(int j=0;j<n;j++) {
+		 			diff[i][j] = onesRow[i]+onesCol[j]-zerosRow[i]-zerosCol[j];
+		 		}
+		 	}
+		 	return diff;
+	    }
+	 
+	 public static void main(String args[]) {
+		 int[][] grid = {{0,1,1},{1,0,1},{0,0,1}};
+		 
+		 int[][] diff = onesMinusZeros(grid);
+		 for(int i=0;i<3;i++) {
+			 for(int j=0;j<3;j++) {
+				 System.out.print(diff[i][j]+" ");
+			 }
+			 System.out.println();
+		 }
+		 
+	 }
+}
